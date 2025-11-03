@@ -1,21 +1,20 @@
 import { Card } from "../components/Card";
+import FormNovaSenha from "../components/FormNovaSenha";
 import { GradienteLayout } from "../layouts/GradienteLayout";
 import LogoCentralizada from "../layouts/LogoCentralizada";
-import FormRedefinirSenha from "../components/FormRedefinirSenha";
 
-
-function RedefinirSenha() {
+function NovaSenha() {
   return (
-    <GradienteLayout>
-      <Card>
-        <div className="flex flex-col justify-center w-full">
+    <>
+      <GradienteLayout>
+        <Card>
+          <div className="flex flex-col justify-center w-full">
           <LogoCentralizada/>
-          <FormRedefinirSenha/>
+          <FormNovaSenha/>
         </div>
         </Card>
       </GradienteLayout>
-    
+    </>
   );
 }
-
-export default RedefinirSenha;
+export default NovaSenha;
