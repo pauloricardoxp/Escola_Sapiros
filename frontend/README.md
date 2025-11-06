@@ -11,7 +11,7 @@ git clone git clone https://github.com/pauloricardoxp/Escola_Sapiros.git
 
 2. **Entre na pasta do projeto**
 
-cd Escola_Sapiros
+cd frontend
 
 3. **Instale as dependências**
 
