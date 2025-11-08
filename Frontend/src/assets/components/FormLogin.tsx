@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "./Input";
 import { FaLock, FaUser } from "react-icons/fa";
 import ValidarCpf from "../utils/ValidarCpf";
+import ValidarEmail from "../utils/ValidarEmail";
 import { Checkbox } from "./Checkbox";
 import { Link } from "react-router-dom";
 import { Button } from "./Button";
@@ -19,35 +20,50 @@ function FormLogin() {
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-    //Teste de mensagem ja q ta sem back end//
-    
-    if (data.cpf === "15226564058" && data.senha === "teste123") {
-      console.log("Dados Enviados", data);
-      toast.success("Usuário encontrado!");
-    } else {
-      toast.error("Usuário não encontrado");
-    }
+  try {
+    const response = await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        identificador: data.identificador,
+        senha: data.senha,
+      }),
+    });
 
-    try {
-      console.log("Dados enviados: ", data);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    const result = await response.json();
+
+      if (result.usuario) {
+        toast.success("Usuário encontrado!");
+      } else {
+        toast.error("Usuário não encontrado");
+      }
+    } catch (error) {
+      console.error("Erro ao conectar:", error);
+      toast.error("Erro de conexão com o servidor");
     } finally {
       setLoading(false);
     }
   };
 
+  const validarIdentificador = (valor: string) => {
+  if (ValidarCpf(valor) || ValidarEmail(valor)) {
+    return true;
+  }
+  return "Digite um CPF ou e-mail válido";
+};
+
   
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <Input
-        label="CPF/Matrícula"
-        placeholder="Digite seu CPF"
+        label="CPF/E-mail"
+        placeholder="Digite seu CPF ou e-mail"
         icon={<FaUser />}
-        {...register("cpf", {
-          required: "CPF é obrigatório",
-          validate: (value) => ValidarCpf(value) === true || "CPF inválido",
+        {...register("identificador", {
+          required: "CPF ou e-mail é obrigatório",
+          validate: validarIdentificador
         })}
-        error={errors?.cpf?.message as string}
+        error={errors?.identificador?.message as string}
       />
 
       <Input

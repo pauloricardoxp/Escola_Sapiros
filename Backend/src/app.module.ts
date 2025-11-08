@@ -11,24 +11,26 @@ import { ResponsavelModule } from './responsavel/responsavel.module';
 import { SecretariaModule } from './secretaria/secretaria.module';
 import { TurmaModule } from './turma/turma.module';
 
+console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env',
     }),
 
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'mysql',
-        host: process.env.MYSQL_DB_HOST || 'localhost',
-        port: parseInt(process.env.MYSQL_DB_PORT || '3306', 10),
-        username: process.env.MYSQL_DB_USERNAME || 'root',
-        password: process.env.MYSQL_DB_PASSWORD || 'root',
-        database: process.env.MYSQL_DB_DATABASE || 'sapiros_db',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: '12345678',
+        database: 'sapiros_db',
         autoLoadEntities: true,
         synchronize: true,
       }),
-    }), 
+    }),
 
     UsuarioModule,
     AuthModule,
@@ -42,4 +44,3 @@ import { TurmaModule } from './turma/turma.module';
   providers: [AppService],
 })
 export class AppModule {}
-
