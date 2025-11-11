@@ -1,3 +1,4 @@
+import DashboardSecretaria from "./assets/pages/DashboardSecretaria";
 import Login from "./assets/pages/Login"
 import NovaSenha from "./assets/pages/NovaSenha";
 import RedefinirSenha from "./assets/pages/RedefinirSenha"
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<Login />}/>
       <Route path="/redefinir-senha" element= {<RedefinirSenha/>}/>
       <Route path="/nova-senha" element={<NovaSenha/>}/>
+      <Route path="/dasboard/secretaria" element={<DashboardSecretaria/>}/>
     </Routes>
     </>
   )

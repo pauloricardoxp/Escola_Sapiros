@@ -5,7 +5,7 @@ import { FaLock, FaUser } from "react-icons/fa";
 import ValidarCpf from "../utils/ValidarCpf";
 import ValidarEmail from "../utils/ValidarEmail";
 import { Checkbox } from "./Checkbox";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./Button";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -17,22 +17,47 @@ function FormLogin() {
   } = useForm();
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
     setLoading(true);
-  try {
-    const response = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        identificador: data.identificador,
-        senha: data.senha,
-      }),
-    });
+    try {
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          identificador: data.identificador,
+          senha: data.senha,
+        }),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-      if (result.usuario) {
+      localStorage.setItem("token", result.token);
+      localStorage.setItem("role", result.usuario.role);
+
+      const role = result.usuario.role?.toLowerCase().trim();
+
+      console.log("Role recebido do back-end:", role);
+
+      switch (role) {
+        case "secretaria":
+          navigate("/dasboard/secretaria");
+          break;
+        case "aluno":
+          navigate("");
+          break;
+        case "professor":
+          navigate("");
+          break;
+        case "responsavel":
+          navigate("");
+          break;
+        default:
+          toast.error("Role desconhecido");
+      }
+
+      if (result.usuario.usuario) {
         toast.success("Usuário encontrado!");
       } else {
         toast.error("Usuário não encontrado");
@@ -46,13 +71,12 @@ function FormLogin() {
   };
 
   const validarIdentificador = (valor: string) => {
-  if (ValidarCpf(valor) || ValidarEmail(valor)) {
-    return true;
-  }
-  return "Digite um CPF ou e-mail válido";
-};
+    if (ValidarCpf(valor) || ValidarEmail(valor)) {
+      return true;
+    }
+    return "Digite um CPF ou e-mail válido";
+  };
 
-  
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <Input
@@ -61,7 +85,7 @@ function FormLogin() {
         icon={<FaUser />}
         {...register("identificador", {
           required: "CPF ou e-mail é obrigatório",
-          validate: validarIdentificador
+          validate: validarIdentificador,
         })}
         error={errors?.identificador?.message as string}
       />
