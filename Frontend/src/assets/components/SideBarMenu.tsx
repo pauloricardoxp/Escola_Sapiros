@@ -48,7 +48,7 @@ function SideBarMenu({navigateTo}: SideBarMenuProps) {
           return (
             <button
               key={index}
-              className="flex items-center gap-3 text-[#e6eef8] hover:opacity-80 transition-opacity"
+              className="flex items-center gap-3 text-[#e6eef8] hover:opacity-80 transition-opacity cursor-pointer"
               onClick={() => {navigateTo(item.viewName)}}
             >
               <IconComponent className="w-6 h-6 md:w-7 md:h-7" />
