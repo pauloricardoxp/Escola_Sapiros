@@ -28,7 +28,7 @@ console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
         autoLoadEntities: true,
         synchronize: true,
       }),
-    }), 
+    }),
 
     UsuarioModule,
     AuthModule,
@@ -40,4 +40,3 @@ console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
   providers: [AppService],
 })
 export class AppModule {}
-
