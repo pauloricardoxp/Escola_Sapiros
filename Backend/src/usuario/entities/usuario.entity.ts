@@ -2,9 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum Role {
   ALUNO = 'aluno',
-  RESPONSAVEL = 'responsavel',
-  PROFESSOR = 'professor',
-  SECRETARIA = 'secretaria',
+  PROFESSOR = 'professores',
+  COORDENACAO = 'coordenacao',
 }
 
 @Entity('usuarios')
@@ -18,10 +17,10 @@ export class Usuario {
   @Column({ unique: true, nullable: true })
   email: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, nullable: false })
   cpf: string;
 
-  @Column()
+  @Column({ nullable: false })
   senha: string;
 
   @Column({

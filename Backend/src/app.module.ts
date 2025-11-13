@@ -7,9 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProfessorModule } from './professor/professor.module';
 import { AlunoModule } from './aluno/aluno.module';
-import { ResponsavelModule } from './responsavel/responsavel.module';
-import { SecretariaModule } from './secretaria/secretaria.module';
-import { TurmaModule } from './turma/turma.module';
+import { CoordenacaoModule } from './coordenacao/coordenacao.module';
 
 console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
 @Module({
@@ -36,9 +34,7 @@ console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
     AuthModule,
     ProfessorModule,
     AlunoModule,
-    ResponsavelModule,
-    SecretariaModule,
-    TurmaModule,
+    CoordenacaoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,4 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
-import { Turma } from '../../turma/entities/turma.entity';
 import { Usuario } from '../../usuario/entities/usuario.entity';
 
 @Entity('professores')
@@ -18,9 +17,6 @@ export class Professor {
 
   @Column()
   telefone_professor: string;
-
-  @OneToMany(() => Turma, turma => turma.professor)
-  turmas: Turma[];
 
   @OneToOne(() => Usuario)
   @JoinColumn({ name: 'usuario_id' })

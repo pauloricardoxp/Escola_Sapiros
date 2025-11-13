@@ -71,21 +71,21 @@ function FormLogin() {
   };
 
   const validarIdentificador = (valor: string) => {
-    if (ValidarCpf(valor) || ValidarEmail(valor)) {
-      return true;
-    }
-    return "Digite um CPF ou e-mail válido";
-  };
-
+  if (ValidarCpf(valor) || ValidarEmail(valor)) {
+    return true;
+  }
+  return "Digite um CPF ou e-mail válido";
+};
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <Input
         label="CPF/E-mail"
         placeholder="Digite seu CPF ou e-mail"
         icon={<FaUser />}
-        {...register("identificador", {
+         {...register("identificador", {
           required: "CPF ou e-mail é obrigatório",
-          validate: validarIdentificador,
+          validate: validarIdentificador
         })}
         error={errors?.identificador?.message as string}
       />

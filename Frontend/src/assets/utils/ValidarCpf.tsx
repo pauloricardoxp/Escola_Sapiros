@@ -34,3 +34,4 @@ const ValidarCpf = (cpf: string): true | string => {
   return true;
 };
 export default ValidarCpf;
+
