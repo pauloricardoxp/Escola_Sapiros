@@ -33,16 +33,24 @@ function FormLogin() {
 
       const result = await response.json();
 
+      if (!response.ok) {
+        if (result.message === "Credenciais inválidas") {
+          toast.error("Usuário não encontrado");
+        } else {
+          toast.error(result.message || "Usuário não encontrado");
+        }
+        setLoading(false);
+        return;
+      }
+
       localStorage.setItem("token", result.token);
       localStorage.setItem("role", result.usuario.role);
 
       const role = result.usuario.role?.toLowerCase().trim();
 
-      console.log("Role recebido do back-end:", role);
-
       switch (role) {
-        case "secretaria":
-          navigate("/dasboard/secretaria");
+        case "coordenacao":
+          navigate("dashboard/coordenacao");
           break;
         case "aluno":
           navigate("");
@@ -50,42 +58,35 @@ function FormLogin() {
         case "professor":
           navigate("");
           break;
-        case "responsavel":
-          navigate("");
-          break;
         default:
           toast.error("Role desconhecido");
       }
-
-      if (result.usuario.usuario) {
-        toast.success("Usuário encontrado!");
-      } else {
-        toast.error("Usuário não encontrado");
-      }
     } catch (error) {
       console.error("Erro ao conectar:", error);
-      toast.error("Erro de conexão com o servidor");
+      toast.error(
+        "Não foi possível conectar ao servidor. Tente novamente mais tarde."
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const validarIdentificador = (valor: string) => {
-  if (ValidarCpf(valor) || ValidarEmail(valor)) {
-    return true;
-  }
-  return "Digite um CPF ou e-mail válido";
-};
-  
+    if (ValidarCpf(valor) || ValidarEmail(valor)) {
+      return true;
+    }
+    return "Digite um CPF ou e-mail válido";
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <Input
         label="CPF/E-mail"
         placeholder="Digite seu CPF ou e-mail"
         icon={<FaUser />}
-         {...register("identificador", {
+        {...register("identificador", {
           required: "CPF ou e-mail é obrigatório",
-          validate: validarIdentificador
+          validate: validarIdentificador,
         })}
         error={errors?.identificador?.message as string}
       />

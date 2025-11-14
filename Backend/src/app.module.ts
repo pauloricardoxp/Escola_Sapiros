@@ -20,7 +20,7 @@ console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'mysql',
-        host: 'localhost',
+        host: 'LOCALHOST',
         port: 3306,
         username: 'root',
         password: '12345678',

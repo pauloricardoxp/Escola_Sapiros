@@ -18,12 +18,11 @@ const CardMural: React.FC<CardMuralProps> = ({ type }) => {
           </h2>
 
           <div className="w-full h-[calc(100%-60px)] border-gray-200 rounded-xl p-4 mt-8">
-            <p className="text-gray-400">
+            <p className="text-gray-400">Neymar Melhor do Mundo
             </p>
           </div>
         </>
       )}
-
       {!isFull && (
         <div className="w-full h-full flex items-center justify-center">
         </div>

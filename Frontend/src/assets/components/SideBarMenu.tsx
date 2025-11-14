@@ -35,7 +35,7 @@ function SideBarMenu({navigateTo}: SideBarMenuProps) {
         <img
           src={LogoDasboard}
           alt="Logo Sapiros"
-          onClick={() => navigateTo("dashboard/secretaria")}
+          onClick={() => navigateTo("dashboard/coordenacao")}
           className="w-28 md:w-36 lg:w-40 h-auto object-contain"
         />
       </div>

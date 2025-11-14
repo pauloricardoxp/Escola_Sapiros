@@ -8,7 +8,7 @@ interface CardMenuProps {
 
 const CardMenu: React.FC<CardMenuProps> = ({ title, icon, onClick }) => {
   return (
-    <div className="w-full h-[150px]p-5  bg-white rounded-xl flex flex-col justify-between cursor-pointer" onClick={onClick}>
+    <div className="w-full h-[150px] p-5 bg-white rounded-xl flex flex-col justify-between cursor-pointer hover:shadow-lg transition-all" onClick={onClick}>
       <div className="w-full flex justify-center items-center h-2/3">
         <div className="w-fit h-fit">{icon}</div>
       </div>
