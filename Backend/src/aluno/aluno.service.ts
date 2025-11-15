@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { Aluno } from './entities/aluno.entity';
 import { Usuario } from '../usuario/entities/usuario.entity';
 import { CreateAlunoDto } from './dto/create-aluno.dto';
@@ -15,20 +16,64 @@ export class AlunoService {
     private readonly usuarioRepository: Repository<Usuario>,
   ) {}
 
-  async create(createAlunoDto: CreateAlunoDto): Promise<Aluno> {
-    const usuario = await this.usuarioRepository.findOne({
-      where: { id: Number(createAlunoDto.usuarioId) },
+  private async generateMatricula(): Promise<string> {
+    const today = new Date();
+    const ano = today.getFullYear().toString();
+    const mes = (today.getMonth() + 1).toString().padStart(2, '0');
+    const prefixo = ano + mes;
+
+    const ultimaMatricula = await this.alunoRepository.findOne({
+      where: { matricula_aluno: Like(`${prefixo}%`) },
+      order: { matricula_aluno: 'DESC' },
     });
-    if (!usuario) throw new NotFoundException('Usuário não encontrado');
+
+    let sequencia = 1;
+
+    if (ultimaMatricula) {
+      const ultimaSequencia = parseInt(ultimaMatricula.matricula_aluno.slice(-4));
+      sequencia = ultimaSequencia + 1;
+    }
+
+    const sequenciaStr = sequencia.toString().padStart(4, '0');
+
+    return prefixo + sequenciaStr;
+  }
+
+  async create(createAlunoDto: CreateAlunoDto): Promise<Aluno> {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(createAlunoDto.senha, saltRounds);
+
+    const novoUsuario = this.usuarioRepository.create({
+      nome: createAlunoDto.nome,
+      email: createAlunoDto.email,
+      cpf: createAlunoDto.cpf,
+      senha: hashedPassword,
+      telefone: createAlunoDto.telefone,
+      role: createAlunoDto.role,
+    });
+
+    try {
+      await this.usuarioRepository.save(novoUsuario);
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY' || error.message.includes('Duplicate entry')) {
+        throw new ConflictException('CPF ou Email já cadastrado.');
+      }
+      throw error;
+    }
+
+    const matricula = await this.generateMatricula();
 
     const [dia, mes, ano] = createAlunoDto.data_nascimento.split('/');
-    const dataNascimento = new Date(`${ano}-${mes}-${dia}`);
-
+    const dataNascimento = new Date(Number(ano), Number(mes) - 1, Number(dia));
+    
     const aluno = this.alunoRepository.create({
+      matricula_aluno: matricula,
       nome_aluno: createAlunoDto.nome,
       data_nascimento: dataNascimento,
       telefone_aluno: createAlunoDto.telefone,
-      usuario,
+      cpf_aluno: createAlunoDto.cpf,
+      senha_aluno: hashedPassword,
+      usuario: novoUsuario,
     });
     return this.alunoRepository.save(aluno);
   }
@@ -37,7 +82,7 @@ export class AlunoService {
     return this.alunoRepository.find({ relations: ['usuario'] });
   }
 
-  async findOne(matricula: number): Promise<Aluno> {
+  async findOne(matricula: string): Promise<Aluno> {
     const aluno = await this.alunoRepository.findOne({
       where: { matricula_aluno: matricula },
       relations: ['usuario'],
@@ -46,12 +91,12 @@ export class AlunoService {
     return aluno;
   }
 
-  async update(matricula: number, updateAlunoDto: UpdateAlunoDto): Promise<Aluno> {
+  async update(matricula: string, updateAlunoDto: UpdateAlunoDto): Promise<Aluno> {
     const aluno = await this.findOne(matricula);
 
     if (updateAlunoDto.data_nascimento) {
       const [dia, mes, ano] = updateAlunoDto.data_nascimento.split('/');
-      aluno.data_nascimento = new Date(`${ano}-${mes}-${dia}`);
+      aluno.data_nascimento = new Date(Number(ano), Number(mes) - 1, Number(dia));
     }
 
     Object.assign(aluno, {
@@ -61,7 +106,7 @@ export class AlunoService {
     return this.alunoRepository.save(aluno);
   }
 
-  async remove(matricula: number): Promise<void> {
+  async remove(matricula: string): Promise<void> {
     const aluno = await this.findOne(matricula);
     await this.alunoRepository.remove(aluno);
   }
