@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, MinLength, IsOptional, IsNumberString, IsString, Length } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, MinLength, IsOptional, IsNumberString, IsString, Length, MaxLength } from 'class-validator';
 import { Role } from '../entities/usuario.entity';
 
 export class CreateUsuarioDto {
@@ -12,14 +12,15 @@ export class CreateUsuarioDto {
 
   @IsNotEmpty()
   @IsNumberString()
-  @Length(11,11, { message: 'CPF deve ter 11 dígitos numéricos' })
+  @Length(11, 11, { message: 'CPF deve ter 11 dígitos numéricos' })
   cpf: string;
 
   @IsNotEmpty()
-  @MinLength(6)
   @IsString()
+  @MinLength(6)
+  @MaxLength(20)
   senha: string;
 
-  @IsEnum(Role, { message: 'Role deve ser aluno, professor ou coordenação' })
+  @IsEnum(Role, { message: 'Role deve ser aluno, professor ou coordenacao' })
   role: Role;
 }

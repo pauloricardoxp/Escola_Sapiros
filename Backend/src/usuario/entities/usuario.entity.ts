@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum Role {
   ALUNO = 'aluno',
-  PROFESSOR = 'professores',
+  PROFESSOR = 'professor',
   COORDENACAO = 'coordenacao',
 }
 
@@ -23,8 +23,8 @@ export class Usuario {
   @Column({ nullable: false })
   senha: string;
 
- @Column({unique:true, nullable: true})    
- telefone: string;
+  @Column({ unique: true, nullable: true })
+  telefone: string;
 
   @Column({
     type: 'enum',

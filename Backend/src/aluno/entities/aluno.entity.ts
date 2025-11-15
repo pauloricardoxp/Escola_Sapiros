@@ -15,6 +15,12 @@ export class Aluno {
   @Column()
   telefone_aluno: string;
 
+  @Column()
+  cpf_aluno: string;
+
+  @Column()
+  senha_aluno: string;
+
   @OneToOne(() => Usuario)
   @JoinColumn({ name: 'usuario_id' })
   usuario: Usuario;

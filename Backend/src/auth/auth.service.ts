@@ -11,16 +11,15 @@ export class AuthService {
   ) {}
 
   async login(identificador: string, senha: string) {
-    // Busca usuário por CPF ou Email
     const usuario = await this.usuarioService.findByCpfOrEmail(identificador);
     if (!usuario) throw new UnauthorizedException('Credenciais inválidas');
 
-    // Valida senha com bcrypt
+    // Ao buscar direto do repository, a senha vem; não retorne a senha ao cliente
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
     if (!senhaValida) throw new UnauthorizedException('Credenciais inválidas');
 
-    // Payload do JWT
     const payload = { sub: usuario.id, role: usuario.role };
+    const token = this.jwtService.sign(payload);
 
     return {
       usuario: {
@@ -28,7 +27,7 @@ export class AuthService {
         nome: usuario.nome,
         role: usuario.role,
       },
-      token: this.jwtService.sign(payload),
+      token,
     };
   }
 }

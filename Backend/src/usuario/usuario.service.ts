@@ -14,7 +14,12 @@ export class UsuarioService {
   ) {}
 
   async findAll(): Promise<Usuario[]> {
-    return this.usuarioRepository.find();
+    // Nunca retorne a senha ao cliente (ideal: usar select para omitir)
+    const usuarios = await this.usuarioRepository.find();
+    return usuarios.map(u => {
+      const { senha, ...resto } = u;
+      return resto as Usuario;
+    });
   }
 
   async findOne(id: number): Promise<Usuario> {
@@ -37,15 +42,13 @@ export class UsuarioService {
     });
 
     const salvo = await this.usuarioRepository.save(novoUsuario);
-    // Não expor a senha
-    delete (salvo as any).senha;
-    return salvo;
+    const { senha, ...resto } = salvo as any;
+    return resto as Usuario;
   }
 
   async update(id: number, dto: UpdateUsuarioDto): Promise<Usuario> {
     const usuario = await this.findOne(id);
 
-    // Re-hash se veio nova senha
     if (dto.senha) {
       const salt = await bcrypt.genSalt();
       dto.senha = await bcrypt.hash(dto.senha, salt);
@@ -53,8 +56,8 @@ export class UsuarioService {
 
     Object.assign(usuario, dto);
     const salvo = await this.usuarioRepository.save(usuario);
-    delete (salvo as any).senha;
-    return salvo;
+    const { senha, ...resto } = salvo as any;
+    return resto as Usuario;
   }
 
   async remove(id: number): Promise<void> {

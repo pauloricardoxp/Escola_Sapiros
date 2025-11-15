@@ -1,15 +1,16 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
 
-// DTO simples para login
 class LoginDto {
   @IsNotEmpty()
   @IsString()
-  identificador: string; // pode ser CPF ou Email
+  identificador: string; // CPF ou email
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(6)
+  @MaxLength(20)
   senha: string;
 }
 

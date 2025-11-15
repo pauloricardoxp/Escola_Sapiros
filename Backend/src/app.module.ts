@@ -9,7 +9,6 @@ import { ProfessorModule } from './professor/professor.module';
 import { AlunoModule } from './aluno/aluno.module';
 import { CoordenacaoModule } from './coordenacao/coordenacao.module';
 
-console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,11 +19,11 @@ console.log('🔍 MYSQL_DB_PASSWORD:', process.env.MYSQL_DB_PASSWORD);
     TypeOrmModule.forRootAsync({
       useFactory: () => ({
         type: 'mysql',
-        host: 'LOCALHOST',
-        port: 3306,
-        username: 'root',
-        password: '12345678',
-        database: 'sapiros_db',
+        host: process.env.MYSQL_DB_HOST,
+        port: Number(process.env.MYSQL_DB_PORT),
+        username: process.env.MYSQL_DB_USER,
+        password: process.env.MYSQL_DB_PASSWORD,
+        database: process.env.MYSQL_DB_NAME,
         autoLoadEntities: true,
         synchronize: true,
       }),
