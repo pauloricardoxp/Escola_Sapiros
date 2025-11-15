@@ -1,8 +1,4 @@
-import { FuncaoCoordenacao } from '../enums/funcao-coordenacao.enum';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateCoordenacaoDto } from './create-coordenacao.dto';
 
-export class UpdateCoordenacaoDto {
-  email_coordenacao?: string;
-  telefone_coordenacao?: string;
-  funcao?: FuncaoCoordenacao;
-  
-}
+export class UpdateCoordenacaoDto extends PartialType(CreateCoordenacaoDto) {}

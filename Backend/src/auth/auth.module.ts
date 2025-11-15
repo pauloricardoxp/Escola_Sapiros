@@ -9,11 +9,12 @@ import { JwtStrategy } from './strategy/jwt.strategy';
   imports: [
     UsuarioModule,
     JwtModule.register({
-      secret: 'SUA_CHAVE_SECRETA_SUPER_SEGURA',
-      signOptions: { expiresIn: '1d' },
+      secret: 'SUA_CHAVE_SECRETA_SUPER_SEGURA', 
+      signOptions: { expiresIn: '1h' }, // token expira em 1 hora
     }),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
+  exports: [AuthService, JwtModule], 
 })
 export class AuthModule {}

@@ -9,7 +9,7 @@ export class Professor {
   @Column()
   nome_professor: string;
 
-  @Column({ unique: true })
+  @Column()
   cpf_professor: string;
 
   @Column()

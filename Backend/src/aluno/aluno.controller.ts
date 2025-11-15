@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AlunoService } from './aluno.service';
 import { CreateAlunoDto } from './dto/create-aluno.dto';
 import { UpdateAlunoDto } from './dto/update-aluno.dto';
+import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles/roles.guard';
+import { Roles } from '../auth/roles/roles.decorator';
 
-@Controller('aluno')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Controller('alunos')
 export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}
 
+  // Criar: coordenacao
+  @Roles('coordenacao')
   @Post()
   create(@Body() createAlunoDto: CreateAlunoDto) {
     return this.alunoService.create(createAlunoDto);
   }
 
+  // Listar: coordenacao, professores
+  @Roles('coordenacao', 'professores')
   @Get()
   findAll() {
     return this.alunoService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.alunoService.findOne(+id);
+  // Ver: coordenacao, professores
+  @Roles('coordenacao', 'professores')
+  @Get(':matricula')
+  findOne(@Param('matricula') matricula: string) {
+    return this.alunoService.findOne(+matricula);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAlunoDto: UpdateAlunoDto) {
-    return this.alunoService.update(+id, updateAlunoDto);
+  // Atualizar: coordenacao 
+  @Roles('coordenacao')
+  @Patch(':matricula')
+  update(@Param('matricula') matricula: string, @Body() updateAlunoDto: UpdateAlunoDto) {
+    return this.alunoService.update(+matricula, updateAlunoDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.alunoService.remove(+id);
+  // Deletar: coordenacao
+  @Roles('coordenacao')
+  @Delete(':matricula')
+  remove(@Param('matricula') matricula: string) {
+    return this.alunoService.remove(+matricula);
   }
 }

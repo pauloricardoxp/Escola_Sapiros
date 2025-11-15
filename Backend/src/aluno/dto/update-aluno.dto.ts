@@ -1,4 +1,4 @@
-export class UpdateAlunoDto {
-  nome_aluno?: string;
-  data_nascimento?: Date;
-}
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateAlunoDto } from './create-aluno.dto';
+
+export class UpdateAlunoDto extends PartialType(CreateAlunoDto) {}

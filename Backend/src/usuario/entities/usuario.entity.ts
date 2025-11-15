@@ -23,6 +23,9 @@ export class Usuario {
   @Column({ nullable: false })
   senha: string;
 
+ @Column({unique:true, nullable: true})    
+ telefone: string;
+
   @Column({
     type: 'enum',
     enum: Role,

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column,OneToOne, JoinColumn } from 'typeorm';
 import { Usuario } from '../../usuario/entities/usuario.entity';
 
 @Entity('alunos')
@@ -11,6 +11,9 @@ export class Aluno {
 
   @Column()
   data_nascimento: Date;
+
+  @Column()
+  telefone_aluno: string;
 
   @OneToOne(() => Usuario)
   @JoinColumn({ name: 'usuario_id' })
