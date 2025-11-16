@@ -11,6 +11,7 @@ import ImagenMural from "../imagens/imagenmural.png";
 import ImagenPerfil from "../imagens/imagenperfil.png";
 import ImagenConfig from "../imagens/imagenconfig.png";
 import CardCalendario from "../components/CardCalendario";
+import Matricula from "./Matricula";
 
 const DocumentosPage = () => (
   <div className="w-full h-full p-8 bg-white rounded-xl shadow-md flex items-center justify-center">
@@ -30,7 +31,7 @@ function DashboardCoordenacao() {
       case "documentos":
         return <DocumentosPage />;
       case "matriculas":
-        return <h2 className="text-3xl">Página de Matrículas</h2>;
+        return <Matricula/>
       case "perfil":
         return <h2 className="text-3xl">Página de Perfil</h2>;
       default:

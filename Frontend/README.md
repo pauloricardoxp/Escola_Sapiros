@@ -13,11 +13,15 @@ git clone git clone https://github.com/pauloricardoxp/Escola_Sapiros.git
 
 cd Escola_Sapiros
 
-3. **Instale as dependências**
+3.**Entre na pasta Frontend**
+
+cd .\Frontend\
+
+4. **Instale as dependências**
 
 npm install
 
-4. **Execute o servidor de desenvolvimento**
+5. **Execute o servidor de desenvolvimento**
 
 npm run dev
 
