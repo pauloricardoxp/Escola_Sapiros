@@ -17,16 +17,58 @@ import CidadeSelect from "./CidadeSelect";
 import NacionalidadeSelect from "./NacionalidadeSelect";
 import FormSelect from "./FormSelect";
 
-function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; defaultValues?: any; }) {
+function FormAluno({
+  onNext,
+  defaultValues,
+}: {
+  onNext: (data: any) => void;
+  defaultValues?: any;
+}) {
   const methods = useForm({
     defaultValues: {
-      nome: "", data_nascimento: "", sexo: "", rg: "", data_emissao: "", orgao_emissor: "", cpf: "", celular: "", email: "", logradouro: "", numero: "", cep: "", complemento: "", bairro: "", estado: "", cidade: "", nacionalidade: "", naturalidade: "", serie: "", turno: "", escola_origem: "", necessidades_especiais: "", tem_alergia: "", quais_alergias: "", saida_sozinho: "", uso_imagem: "", ...defaultValues,
+      nome: "",
+      data_nascimento: "",
+      sexo: "",
+      rg: "",
+      data_emissao: "",
+      orgao_emissor: "",
+      cpf: "",
+      celular: "",
+      email: "",
+      logradouro: "",
+      numero: "",
+      cep: "",
+      complemento: "",
+      bairro: "",
+      estado: "",
+      cidade: "",
+      nacionalidade: "",
+      naturalidade: "",
+      serie: "",
+      turno: "",
+      escola_origem: "",
+      necessidades_especiais: "",
+      tem_alergia: "",
+      quais_alergias: "",
+      saida_sozinho: "",
+      uso_imagem: "",
+      ...defaultValues,
     },
   });
 
-  const { register, handleSubmit, setValue, formState: { errors }, control } = methods;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    control,
+  } = methods;
 
-  const onSubmit = (data: any) => onNext(data);
+  const onSubmit = (data: any) => {
+    console.log("Dados do aluno enviados:", data);
+
+    onNext(data);
+  };
 
   return (
     <FormProvider {...methods}>
@@ -36,31 +78,51 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
           <FormRowMatricula>
             <FormTextoMatricula title="Nome completo:" className="w-full">
               <Input
-                placeholder="" label="" type="text"
+                placeholder=""
+                label=""
+                type="text"
                 {...register("nome", {
                   required: "Nome completo é obrigatório",
-                  minLength: { value: 3, message: "O nome deve ter pelo menos 3 caracteres" },
-                  pattern: { value: /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/, message: "O nome não pode conter números ou caracteres inválidos" },
+                  minLength: {
+                    value: 3,
+                    message: "O nome deve ter pelo menos 3 caracteres",
+                  },
+                  pattern: {
+                    value: /^[A-Za-zÀ-ÖØ-öø-ÿ ]+$/,
+                    message:
+                      "O nome não pode conter números ou caracteres inválidos",
+                  },
                 })}
                 error={errors?.nome?.message as string}
               />
             </FormTextoMatricula>
             <FormTextoMatricula title="Data de nascimento:" className="w-1/2">
               <Input
-                label={""} type="date"
+                label={""}
+                type="date"
                 {...register("data_nascimento", {
                   required: "A data de nascimento é obrigatória",
                   validate: {
-                    dataValida: (value) => isNaN(new Date(value).getTime()) ? "Data inválida" : true,
-                    naoFutura: (value) => new Date(value) > new Date() ? "A data de nascimento não pode ser no futuro" : true,
+                    dataValida: (value) =>
+                      isNaN(new Date(value).getTime()) ? "Data inválida" : true,
+                    naoFutura: (value) =>
+                      new Date(value) > new Date()
+                        ? "A data de nascimento não pode ser no futuro"
+                        : true,
                     idadePermitida: (value) => {
                       const hoje = new Date();
                       const data = new Date(value);
                       let idade = hoje.getFullYear() - data.getFullYear();
                       const mes = hoje.getMonth() - data.getMonth();
-                      if (mes < 0 || (mes === 0 && hoje.getDate() < data.getDate())) idade--;
-                      if (idade < 14) return "O aluno deve ter pelo menos 14 anos";
-                      if (idade > 19) return "O aluno deve ter no máximo 20 anos";
+                      if (
+                        mes < 0 ||
+                        (mes === 0 && hoje.getDate() < data.getDate())
+                      )
+                        idade--;
+                      if (idade < 14)
+                        return "O aluno deve ter pelo menos 14 anos";
+                      if (idade > 19)
+                        return "O aluno deve ter no máximo 20 anos";
                       return true;
                     },
                   },
@@ -72,17 +134,33 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
 
           <FormRowMatricula>
             <FormTextoMatricula title="Sexo:" className="w-1/2">
-              <FormSelect name="sexo" options={[{ value: "masculino", label: "Masculino" }, { value: "feminino", label: "Feminino" }, { value: "outros", label: "Outros" }]} />
+              <FormSelect
+                name="sexo"
+                options={[
+                  { value: "masculino", label: "Masculino" },
+                  { value: "feminino", label: "Feminino" },
+                ]}
+              />
             </FormTextoMatricula>
             <FormTextoMatricula title="RG:" className="w-1/2">
               <Input
-                label={""} type="text"
+                label={""}
+                type="text"
                 {...register("rg", {
                   required: "O RG é obrigatório",
-                  minLength: { value: 7, message: "O RG deve ter pelo menos 8 caracteres" },
-                  // Ajuste: Mensagem agora condiz com o valor máximo de caracteres
-                  maxLength: { value: 14, message: "O RG deve ter no máximo 14 caracteres com pontuação" }, 
-                  pattern: { value: /^[0-9.\-]+$/, message: "O RG deve conter apenas números, pontos e hífen" },
+                  minLength: {
+                    value: 7,
+                    message: "O RG deve ter pelo menos 8 caracteres",
+                  },
+                  maxLength: {
+                    value: 14,
+                    message:
+                      "O RG deve ter no máximo 14 caracteres com pontuação",
+                  },
+                  pattern: {
+                    value: /^[0-9.-]+$/,
+                    message: "O RG deve conter apenas números, pontos e hífen",
+                  },
                   onChange: (e) => setValue("rg", MaskRG(e.target.value)),
                 })}
                 error={errors?.rg?.message as string}
@@ -91,16 +169,18 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
           </FormRowMatricula>
 
           <FormRowMatricula>
-            {/* Ajuste de Layout: Para caber 3 campos por linha, alteramos para w-1/3 (33.33%) */}
             <FormTextoMatricula title="Data de emissão:" className="w-1/3">
               <Input
-                label={""} type="date"
+                label={""}
+                type="date"
                 {...register("data_emissao", {
                   required: "A data de emissão é obrigatória",
                   validate: (value) => {
                     const data = new Date(value);
-                    if (data > new Date()) return "A data de emissão não pode ser no futuro";
-                    if (data < new Date("2000-01-01")) return "A data de emissão é inválida";
+                    if (data > new Date())
+                      return "A data de emissão não pode ser no futuro";
+                    if (data < new Date("2000-01-01"))
+                      return "A data de emissão é inválida";
                     return true;
                   },
                 })}
@@ -115,7 +195,10 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
                   required: "Órgão emissor é obrigatório",
                   minLength: { value: 2, message: "Mínimo de 2 caracteres" },
                   maxLength: { value: 10, message: "Máximo de 10 caracteres" },
-                  pattern: { value: /^[A-Za-zÀ-ÖØ-öø-ÿ-]+$/, message: "Use apenas letras e hífen" },
+                  pattern: {
+                    value: /^[A-Za-zÀ-ÖØ-öø-ÿ-]+$/,
+                    message: "Use apenas letras e hífen",
+                  },
                 })}
                 error={errors?.orgao_emissor?.message as string}
               />
@@ -128,7 +211,9 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
                   required: "CPF é obrigatório",
                   validate: {
                     cpfValido: (value) => ValidarCpf(value) || "CPF inválido",
-                    tamanhoValido: (value) => value.replace(/\D/g, "").length === 11 || "CPF deve ter 11 dígitos",
+                    tamanhoValido: (value) =>
+                      value.replace(/\D/g, "").length === 11 ||
+                      "CPF deve ter 11 dígitos",
                   },
                   onChange: (e) => (e.target.value = MaskCPF(e.target.value)),
                 })}
@@ -144,7 +229,8 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
                 {...register("celular", {
                   required: "O celular é obrigatório",
                   validate: (value) => ValidarTelefone(value),
-                  onChange: (e) => (e.target.value = MaskTelefone(e.target.value)),
+                  onChange: (e) =>
+                    (e.target.value = MaskTelefone(e.target.value)),
                 })}
                 error={errors?.celular?.message as string}
               />
@@ -166,12 +252,21 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
         <CardTituloMatricula>Endereço do(a) aluno(a)</CardTituloMatricula>
 
         <FormRowMatricula>
-          {/* Ajuste: Adicionado 'required' para Logradouro e Número */}
           <FormTextoMatricula title="Logradouro:" className="w-1/2">
-            <Input label={""} {...register("logradouro", { required: "Logradouro é obrigatório" })} error={errors?.logradouro?.message as string} />
+            <Input
+              label={""}
+              {...register("logradouro", {
+                required: "Logradouro é obrigatório",
+              })}
+              error={errors?.logradouro?.message as string}
+            />
           </FormTextoMatricula>
           <FormTextoMatricula title="Número:" className="w-1/2">
-            <Input label={""} {...register("numero", { required: "Número é obrigatório" })} error={errors?.numero?.message as string} />
+            <Input
+              label={""}
+              {...register("numero", { required: "Número é obrigatório" })}
+              error={errors?.numero?.message as string}
+            />
           </FormTextoMatricula>
           <FormTextoMatricula title="CEP:" className="w-1/2">
             <Input
@@ -189,7 +284,8 @@ function FormAluno({ onNext, defaultValues }: { onNext: (data: any) => void; def
                       setValue("bairro", data.bairro || "");
                       setValue("cidade", data.cidade || "");
                       setValue("estado", data.estado || "");
-                      if (data.complemento) setValue("complemento", data.complemento);
+                      if (data.complemento)
+                        setValue("complemento", data.complemento);
                     }
                   }
                 },

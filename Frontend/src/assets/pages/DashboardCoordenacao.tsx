@@ -31,7 +31,7 @@ function DashboardCoordenacao() {
       case "documentos":
         return <DocumentosPage />;
       case "matriculas":
-        return <Matricula/>
+        return <Matricula />;
       case "perfil":
         return <h2 className="text-3xl">Página de Perfil</h2>;
       default:
@@ -82,7 +82,7 @@ function DashboardCoordenacao() {
           <HeaderBar />
         </div>
 
-        <div className="flex-1 bg-[#E6EEF8] relative overflow-y-auto p-8 rounded-tl-[30px]">
+        <div className="flex-1 bg-[#E6EEF8] relative overflow-y-auto p-15 rounded-tl-[30px]">
           {currentView === "dashboard/coordenacao" ? (
             <div className="grid grid-cols-5 gap-8 h-full">
               <div className="col-span-3 flex flex-col">
@@ -111,9 +111,11 @@ function DashboardCoordenacao() {
                   <CardMural type="mini" />
                 </div>
               </div>
-              <div className="col-span-2 flex flex-col space-y-6">
+              <div className="col-span-2 flex flex-col space-y-6 h-full">
                 <CardMural type="full" />
-                <CardCalendario />
+                <div className="-mt-2.5">
+                  <CardCalendario />
+                </div>
               </div>
             </div>
           ) : (

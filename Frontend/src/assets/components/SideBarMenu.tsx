@@ -7,6 +7,7 @@ import {
   HiOutlineCog8Tooth,
   HiOutlineArrowLeftStartOnRectangle,
 } from "react-icons/hi2";
+import { IoHomeOutline } from "react-icons/io5";
 import { IoMdTv } from "react-icons/io";
 import LogoDasboard from "../imagens/logodasboard.png";
 
@@ -15,6 +16,7 @@ interface SideBarMenuProps {
 }
 function SideBarMenu({navigateTo}: SideBarMenuProps) {
   const menuItems = [
+    { icon: IoHomeOutline, label: "Home",viewName: "dashboard/coordenacao"},
     { icon: HiOutlineClipboardDocumentList, label: "Documentos",viewName: "documentos" },
     { icon: FaRegEdit, label: "Matrícula\nTransferências",viewName: "matriculas" },
     { icon: HiOutlineCalendarDateRange, label: "Calendário",viewName: "calendario" },

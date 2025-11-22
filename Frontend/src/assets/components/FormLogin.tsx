@@ -8,12 +8,14 @@ import { Checkbox } from "./Checkbox";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./Button";
 import { ToastContainer, toast } from "react-toastify";
+import { MaskCPF } from "../utils/MaskCPF";
 
 function FormLogin() {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue
   } = useForm();
   const [isChecked, setIsChecked] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -86,7 +88,17 @@ function FormLogin() {
         icon={<FaUser />}
         {...register("identificador", {
           required: "CPF ou e-mail é obrigatório",
-          validate: validarIdentificador,
+          validate: {
+            validarIdentificador,
+          },
+          onChange: (e) => {
+            let value = e.target.value;
+            if (/[a-zA-Z@]/.test(value)) return;
+
+            const masked = MaskCPF(value);
+
+            setValue("identificador", masked);
+          },
         })}
         error={errors?.identificador?.message as string}
       />

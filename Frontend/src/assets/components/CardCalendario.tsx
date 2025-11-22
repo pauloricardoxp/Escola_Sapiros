@@ -13,7 +13,7 @@ const CardCalendario: React.FC<CardCalendarioProps> = () => {
 
   return (
     <div>
-      <div className="w-full border-gray-200 rounded-xl p-4 mt-4 flex justify-center">
+      <div className="w-full border-gray-200 rounded-xl p-9 mt-4 flex justify-center">
         <div className="scale-110 origin-top">
           <Calendar
             className="custom-calendar"
