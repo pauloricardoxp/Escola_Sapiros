@@ -9,6 +9,6 @@ export class AuthController {
   @Post('login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto.identificador, loginDto.senha);
+    return this.authService.login(loginDto);
   }
 }

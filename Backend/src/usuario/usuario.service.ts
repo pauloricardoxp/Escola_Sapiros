@@ -32,16 +32,13 @@ export class UsuarioService {
   async create(dto: CreateUsuarioDto): Promise<Omit<Usuario, 'senha'>> {
     const senhaPadrao = 'Sapiros@123';
 
-    //  Proibir cadastro usando manualmente a senha padrão
     if ((dto as any).senha === senhaPadrao) {
       throw new BadRequestException('A senha padrão não pode ser usada no cadastro.');
     }
 
-    // sempre gerar a senha padrão automaticamente
     const salt = await bcrypt.genSalt();
     const senhaHash = await bcrypt.hash(senhaPadrao, salt);
 
-    //  senha expira em 180 dias
     const dataExpiracao = new Date();
     dataExpiracao.setDate(dataExpiracao.getDate() + 180);
 
@@ -62,7 +59,6 @@ export class UsuarioService {
     if (dto.senha) {
       const senhaPadrao = 'Sapiros@123';
 
-      //  Não permitir que um usuário troque para a senha padrão
       if (dto.senha === senhaPadrao) {
         throw new BadRequestException('A senha padrão não pode ser usada.');
       }
@@ -70,7 +66,6 @@ export class UsuarioService {
       const salt = await bcrypt.genSalt();
       dto.senha = await bcrypt.hash(dto.senha, salt);
 
-      //  ao alterar senha, atualizar a data de expiração
       const dataExpiracao = new Date();
       dataExpiracao.setDate(dataExpiracao.getDate() + 180);
       dto.senhaExpiraEm = dataExpiracao;
