@@ -71,41 +71,42 @@ export class AlunoService {
     // 2. CRIAÇÃO SEGURA COM TRANSAÇÃO
     
     return this.dataSource.transaction(async (manager) => {
-      // 2a. Preparar dados do USUÁRIO (Base)
-      const userData: DeepPartial<Usuario> = {
-        nome: createAlunoDto.nome,
-        email: createAlunoDto.email,
-        cpf: createAlunoDto.cpf,
-        telefone: createAlunoDto.telefone,
-        senha: await bcrypt.hash(createAlunoDto.senha, 10),
-        data_nascimento: parseDate(createAlunoDto.data_nascimento, 'Data de Nascimento'),
-        sexo: createAlunoDto.sexo,
-        rgNumero: createAlunoDto.rgNumero,
-        rgDataEmissao: parseOptionalDate(createAlunoDto.rgDataEmissao),
-        rgOrgaoEmissor: createAlunoDto.rgOrgaoEmissor,
-        enderecoLogradouro: createAlunoDto.enderecoLogradouro,
-        enderecoNumero: createAlunoDto.enderecoNumero,
-        enderecoCep: createAlunoDto.enderecoCep,
-        enderecoComplemento: createAlunoDto.enderecoComplemento,
-        enderecoBairro: createAlunoDto.enderecoBairro,
-        enderecoEstado: createAlunoDto.enderecoEstado,
-        enderecoCidade: createAlunoDto.enderecoCidade,
-        nacionalidade: createAlunoDto.nacionalidade,
-        naturalidade: createAlunoDto.naturalidade,
-        possuiNecessidadesEspeciais: createAlunoDto.possuiNecessidadesEspeciais || false,
-        descricaoNecessidadesEspeciais: createAlunoDto.descricaoNecessidadesEspeciais,
-        possuiAlergias: createAlunoDto.possuiAlergias || false,
-        descricaoAlergias: createAlunoDto.descricaoAlergias,
-        autorizacaoUsoImagem: createAlunoDto.autorizacaoUsoImagem || false,
-        role: Role.ALUNO, // Define o papel na tabela base
-      };
+        // 2a. Preparar dados do USUÁRIO (Base)
+    const userData: DeepPartial<Usuario> = {
+    nome: createAlunoDto.nome,
+    email: createAlunoDto.email,
+    cpf: createAlunoDto.cpf,
+    telefone: createAlunoDto.telefone,
+    senha: await bcrypt.hash('Sapiros@123', 10), // FIXO
+    data_nascimento: parseDate(createAlunoDto.data_nascimento, 'Data de Nascimento'),
+    sexo: createAlunoDto.sexo,
+    rgNumero: createAlunoDto.rgNumero,
+    rgDataEmissao: parseOptionalDate(createAlunoDto.rgDataEmissao),
+    rgOrgaoEmissor: createAlunoDto.rgOrgaoEmissor,
+    enderecoLogradouro: createAlunoDto.enderecoLogradouro,
+    enderecoNumero: createAlunoDto.enderecoNumero,
+    enderecoCep: createAlunoDto.enderecoCep,
+    enderecoComplemento: createAlunoDto.enderecoComplemento,
+    enderecoBairro: createAlunoDto.enderecoBairro,
+    enderecoEstado: createAlunoDto.enderecoEstado,
+    enderecoCidade: createAlunoDto.enderecoCidade,
+    nacionalidade: createAlunoDto.nacionalidade,
+    naturalidade: createAlunoDto.naturalidade,
+    possuiNecessidadesEspeciais: createAlunoDto.possuiNecessidadesEspeciais || false,
+    descricaoNecessidadesEspeciais: createAlunoDto.descricaoNecessidadesEspeciais,
+    possuiAlergias: createAlunoDto.possuiAlergias || false,
+    descricaoAlergias: createAlunoDto.descricaoAlergias,
+    autorizacaoUsoImagem: createAlunoDto.autorizacaoUsoImagem || false,
+    role: Role.ALUNO,
+  };
+
 
       const novoUsuario = manager.create(Usuario, userData);
       const usuarioSalvo = await manager.save(Usuario, novoUsuario);
 
       // 2b. Preparar dados do ALUNO (Específico)
       const alunoData: DeepPartial<Aluno> = {
-        // 🔑 Chaves do JTI Manual: Usa o ID do usuário como FK/PK do aluno
+        //  Chaves do JTI Manual: Usa o ID do usuário como FK/PK do aluno
         id: usuarioSalvo.id,
         usuario: usuarioSalvo, 
 

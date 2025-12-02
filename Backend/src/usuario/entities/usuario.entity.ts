@@ -29,8 +29,13 @@ export class Usuario {
   @Column()
   senha: string;
 
-  @Column({ type: 'timestamp', name: 'senha_expira_em' })
-  senhaExpiraEm: Date;
+  @Column({
+  type: 'timestamp',
+  name: 'senha_expira_em',
+  default: () => "DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 180 DAY)"
+    })
+    senhaExpiraEm: Date;
+
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   senhaAtualizadaEm: Date;

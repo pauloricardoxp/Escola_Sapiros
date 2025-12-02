@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -30,9 +30,18 @@ export class UsuarioService {
   }
 
   async create(dto: CreateUsuarioDto): Promise<Omit<Usuario, 'senha'>> {
-    const salt = await bcrypt.genSalt();
-    const senhaHash = await bcrypt.hash(dto.senha, salt);
+    const senhaPadrao = 'Sapiros@123';
 
+    //  Proibir cadastro usando manualmente a senha padrão
+    if ((dto as any).senha === senhaPadrao) {
+      throw new BadRequestException('A senha padrão não pode ser usada no cadastro.');
+    }
+
+    // sempre gerar a senha padrão automaticamente
+    const salt = await bcrypt.genSalt();
+    const senhaHash = await bcrypt.hash(senhaPadrao, salt);
+
+    //  senha expira em 180 dias
     const dataExpiracao = new Date();
     dataExpiracao.setDate(dataExpiracao.getDate() + 180);
 
@@ -47,19 +56,24 @@ export class UsuarioService {
     return resto;
   }
 
-  async update(
-    id: string,
-    dto: UpdateUsuarioDto,
-  ): Promise<Omit<Usuario, 'senha'>> {
+  async update(id: string, dto: UpdateUsuarioDto): Promise<Omit<Usuario, 'senha'>> {
     const usuario = await this.findOne(id);
 
     if (dto.senha) {
+      const senhaPadrao = 'Sapiros@123';
+
+      //  Não permitir que um usuário troque para a senha padrão
+      if (dto.senha === senhaPadrao) {
+        throw new BadRequestException('A senha padrão não pode ser usada.');
+      }
+
       const salt = await bcrypt.genSalt();
       dto.senha = await bcrypt.hash(dto.senha, salt);
 
+      //  ao alterar senha, atualizar a data de expiração
       const dataExpiracao = new Date();
       dataExpiracao.setDate(dataExpiracao.getDate() + 180);
-      dto['senhaExpiraEm'] = dataExpiracao;
+      dto.senhaExpiraEm = dataExpiracao;
     }
 
     Object.assign(usuario, dto);

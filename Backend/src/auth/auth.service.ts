@@ -15,10 +15,20 @@ export class AuthService {
     if (!usuario)
       throw new UnauthorizedException('Credenciais inválidas');
 
-    // Verifica senha correta
+    // Verifica se a senha informada está correta
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
     if (!senhaValida)
       throw new UnauthorizedException('Credenciais inválidas');
+
+    // Impedir login com senha Padrão
+    const senhaPadrao = 'Sapiros@123';
+    const isSenhaPadrao = await bcrypt.compare(senhaPadrao, usuario.senha);
+
+    if (isSenhaPadrao) {
+      throw new UnauthorizedException(
+        'Senha temporária detectada. Você deve alterá-la antes de acessar o sistema.',
+      );
+    }
 
     // Verifica se a senha expirou
     if (usuario.senhaExpiraEm && new Date() > new Date(usuario.senhaExpiraEm)) {

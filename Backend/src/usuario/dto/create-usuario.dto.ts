@@ -33,18 +33,6 @@ export class CreateUsuarioDto {
   @Length(11, 11, { message: 'CPF deve ter 11 dígitos numéricos' })
   cpf: string;
 
-  // SENHA FORTALECIDA
-  @IsNotEmpty()
-  @IsString()
-  @Length(8, 64, { message: 'A senha deve ter no mínimo 8 caracteres' })
-  @Matches(
-    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}[\]|:;"'<>,.?/]).{8,}$/,
-    {
-      message:
-        'A senha deve conter ao menos 1 letra maiúscula, 1 número e 1 caractere especial.',
-    },
-  )
-  senha: string;
 
   @IsOptional()
   @IsNumberString()
