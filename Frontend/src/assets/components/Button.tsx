@@ -15,7 +15,7 @@ export function Button({ children, disabled, ...props }: ButtonProps) {
        
         ${
           !disabled
-            ? "bg-green-500 hover:bg-green-600 focus:ring-green-300"
+            ? "bg-[#1D5D7F] hover:bg-[#388CB9] focus:ring-green-300"
             : "bg-gray-400 cursor-not-allowed opacity-70"
         }
       `}

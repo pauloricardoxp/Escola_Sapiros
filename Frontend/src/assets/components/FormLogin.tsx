@@ -124,7 +124,7 @@ function FormLogin() {
 
         <Link
           to={"/redefinir-senha"}
-          className="text-green-600 text-base font-normal hover:underline"
+          className="text-[#1D5D7F] text-base font-normal hover:underline"
         >
           Esqueceu a senha?
         </Link>

@@ -16,7 +16,7 @@ function Login() {
           <h2 className="text-3xl sm:text-4xl font-semibold text-blue-900 mb-2">
             Login
           </h2>
-          <div className="w-12 h-1 bg-green-500 rounded-full mb-8 sm:mb-10"></div>
+          <div className="w-12 h-1 bg-[#063149] rounded-full mb-8 sm:mb-10"></div>
           <FormLogin />
         </div>
       </Card>
