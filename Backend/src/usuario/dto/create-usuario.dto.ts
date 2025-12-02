@@ -1,4 +1,15 @@
-import { IsEmail,IsEnum, IsNotEmpty, MinLength, IsOptional, IsNumberString, IsString,Length, MaxLength, IsBoolean,IsDateString,} from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsNumberString,
+  IsString,
+  Length,
+  IsBoolean,
+  IsDateString,
+  Matches,
+} from 'class-validator';
 import { Role } from '../entities/usuario.entity';
 
 export enum Sexo {
@@ -22,38 +33,43 @@ export class CreateUsuarioDto {
   @Length(11, 11, { message: 'CPF deve ter 11 dígitos numéricos' })
   cpf: string;
 
+  // SENHA FORTALECIDA
   @IsNotEmpty()
   @IsString()
-  @MinLength(6)
-  @MaxLength(20)
+  @Length(8, 64, { message: 'A senha deve ter no mínimo 8 caracteres' })
+  @Matches(
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-={}[\]|:;"'<>,.?/]).{8,}$/,
+    {
+      message:
+        'A senha deve conter ao menos 1 letra maiúscula, 1 número e 1 caractere especial.',
+    },
+  )
   senha: string;
 
   @IsOptional()
   @IsNumberString()
-  @Length(10, 15, { message: 'Telefone deve ter entre 10 e 15 dígitos numéricos' })
+  @Length(10, 15)
   telefone?: string;
 
   @IsNotEmpty()
   @IsDateString()
-  data_nascimento: string; // string ISO
+  data_nascimento: string;
 
-  @IsEnum(Sexo, { message: 'Sexo deve ser MASCULINO, FEMININO, OUTRO ou NAO_INFORMADO' })
+  @IsEnum(Sexo)
   sexo: Sexo;
 
-  // Documento RG
   @IsNotEmpty()
   @IsString()
   rgNumero: string;
 
   @IsOptional()
   @IsDateString()
-  rgDataEmissao?: string; // string ISO
+  rgDataEmissao?: string;
 
   @IsOptional()
   @IsString()
   rgOrgaoEmissor?: string;
 
-  // Endereço
   @IsNotEmpty()
   @IsString()
   enderecoLogradouro: string;
@@ -64,7 +80,7 @@ export class CreateUsuarioDto {
 
   @IsNotEmpty()
   @IsString()
-  @Length(8, 8, { message: 'CEP deve ter 8 dígitos' })
+  @Length(8, 8)
   enderecoCep: string;
 
   @IsOptional()
@@ -77,7 +93,7 @@ export class CreateUsuarioDto {
 
   @IsNotEmpty()
   @IsString()
-  @Length(2, 2, { message: 'Estado deve ter 2 caracteres' })
+  @Length(2, 2)
   enderecoEstado: string;
 
   @IsNotEmpty()
@@ -92,7 +108,6 @@ export class CreateUsuarioDto {
   @IsString()
   naturalidade: string;
 
-  // Informações Complementares
   @IsOptional()
   @IsBoolean()
   possuiNecessidadesEspeciais?: boolean;
@@ -113,6 +128,7 @@ export class CreateUsuarioDto {
   @IsBoolean()
   autorizacaoUsoImagem?: boolean;
 
-  @IsEnum(Role, { message: 'Role deve ser aluno, professor ou coordenacao' })
+  @IsEnum(Role)
   role: Role;
 }
+

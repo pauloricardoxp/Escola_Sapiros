@@ -19,12 +19,13 @@ import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { Role, Usuario } from '../usuario/entities/usuario.entity';
+import { SenhaExpiradaGuard } from 'src/auth/senha-expirada/senha-expirada.guard';
 
 type AuthRequest = Request & {
   user?: Usuario | { id: string; role: Role } | any;
 };
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, SenhaExpiradaGuard)
 @Controller('alunos')
 export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}

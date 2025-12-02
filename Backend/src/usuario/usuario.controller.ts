@@ -6,6 +6,7 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { RolesGuard } from '../auth/roles/roles.guard';
+import { SenhaExpiradaGuard } from 'src/auth/senha-expirada/senha-expirada.guard';
 
 // Tipo de resposta exposto pela API: mantém a entidade, mas transforma as datas em string (ou null) e remove a senha
 type UsuarioResponse = Omit<Usuario, 'senha' | 'data_nascimento' | 'rgDataEmissao'> & {
@@ -32,7 +33,7 @@ function formatarUsuario(u: Partial<Usuario>): UsuarioResponse {
 }
 
 @Controller('usuarios')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard, SenhaExpiradaGuard)
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 

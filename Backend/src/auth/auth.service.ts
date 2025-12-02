@@ -12,13 +12,28 @@ export class AuthService {
 
   async login(identificador: string, senha: string) {
     const usuario = await this.usuarioService.findByCpfOrEmail(identificador);
-    if (!usuario) throw new UnauthorizedException('Credenciais inválidas');
+    if (!usuario)
+      throw new UnauthorizedException('Credenciais inválidas');
 
-    // Ao buscar direto do repository, a senha vem; não retorne a senha ao cliente
+    // Verifica senha correta
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
-    if (!senhaValida) throw new UnauthorizedException('Credenciais inválidas');
+    if (!senhaValida)
+      throw new UnauthorizedException('Credenciais inválidas');
 
-    const payload = { sub: usuario.id, role: usuario.role };
+    // Verifica se a senha expirou
+    if (usuario.senhaExpiraEm && new Date() > new Date(usuario.senhaExpiraEm)) {
+      throw new UnauthorizedException(
+        'A senha expirou. Por favor, redefina sua senha.',
+      );
+    }
+
+    // Inserir data da expiração no payload
+    const payload = {
+      sub: usuario.id,
+      role: usuario.role,
+      senhaExpiraEm: usuario.senhaExpiraEm,
+    };
+
     const token = this.jwtService.sign(payload);
 
     return {

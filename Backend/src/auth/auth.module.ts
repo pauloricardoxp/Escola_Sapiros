@@ -12,15 +12,16 @@ import { UsuarioModule } from '../usuario/usuario.module';
     ConfigModule,
     forwardRef(() => UsuarioModule),
     PassportModule,
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService): JwtModuleOptions => {
         const secret = config.get<string>('JWT_SECRET') ?? 'default_secret';
 
-        // Use segundos no .env (ex.: 3600) para evitar erro de tipo
+        // JWT_EXPIRES_IN deve vir em segundos
         const expiresRaw = config.get<string>('JWT_EXPIRES_IN');
-        const expiresIn = expiresRaw ? Number(expiresRaw) : 3600; // segundos
+        const expiresIn = expiresRaw ? Number(expiresRaw) : 3600; // 1h padrão
 
         return {
           secret,
