@@ -1,105 +1,104 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum Role {
-  ALUNO = 'aluno',
-  PROFESSOR = 'professor',
-  COORDENACAO = 'coordenacao',
+  ALUNO = 'aluno',
+  PROFESSOR = 'professor',
+  COORDENACAO = 'coordenacao',
 }
 
 @Entity('usuarios')
 export class Usuario {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
-  nome: string;
+  @Column()
+  nome: string;
 
-  @Column({ unique: true, nullable: true })
-  email: string;
+  @Column({ unique: true, nullable: true })
+  email: string;
 
-  @Column({ unique: true, nullable: false })
-  cpf: string;
+  @Column({ unique: true })
+  cpf: string;
 
-  @Column({ nullable: false })
-  senha: string;
+  @Column()
+  senha: string;
 
-  @Column({ unique: true, nullable: true })
-  telefone: string;
+  @Column({ unique: true, nullable: true })
+  telefone: string;
 
-  @Column({ type: 'date' })
-   data_nascimento: Date;
- 
-   @Column({ type: 'enum', enum: ['MASCULINO', 'FEMININO', 'OUTRO', 'NAO_INFORMADO'], default: 'NAO_INFORMADO' })
-   sexo: string;
-   
-   // Documento RG
-   @Column({ name: 'rg_numero' })
-   rgNumero: string;
-   
-   @Column({ name: 'rg_data_emissao', type: 'date', nullable: true })
-   rgDataEmissao: Date;
-   
-   @Column({ name: 'rg_orgao_emissor', nullable: true })
-   rgOrgaoEmissor: string;
-   
-   // Endereço
-   @Column({ name: 'endereco_logradouro' })
-   enderecoLogradouro: string;
-   
-   @Column({ name: 'endereco_numero' })
-   enderecoNumero: string;
-   
-   @Column({ name: 'endereco_cep' })
-   enderecoCep: string;
-   
-   @Column({ name: 'endereco_complemento', nullable: true })
-   enderecoComplemento: string;
-   
-   @Column({ name: 'endereco_bairro' })
-   enderecoBairro: string;
-   
-   @Column({ name: 'endereco_estado', length: 2 })
-   enderecoEstado: string;
-   
-   @Column({ name: 'endereco_cidade' })
-   enderecoCidade: string;
-   
-   @Column()
-   nacionalidade: string; 
-   @Column()
-   naturalidade: string;
- 
+  @Column({ type: 'date' })
+  data_nascimento: Date;
 
-   // Informações Complementares
-   @Column({ name: 'possui_necessidades_especiais', default: false })
-  possuiNecessidadesEspeciais: boolean;
+  @Column({
+    type: 'enum',
+    enum: ['MASCULINO', 'FEMININO', 'OUTRO', 'NAO_INFORMADO'],
+    default: 'NAO_INFORMADO',
+  })
+  sexo: string;
 
-   @Column({ name: 'descricao_necessidades_especiais', nullable: true })
-   descricaoNecessidadesEspeciais: string;
+  @Column({ name: 'rg_numero' })
+  rgNumero: string;
 
-  @Column({ name: 'possui_alergias', default: false })
-  possuiAlergias: boolean;
+  @Column({ name: 'rg_data_emissao', type: 'date', nullable: true })
+  rgDataEmissao?: Date;
 
-  @Column({ name: 'descricao_alergias', nullable: true })
-  descricaoAlergias: string;
+  @Column({ name: 'rg_orgao_emissor', nullable: true })
+  rgOrgaoEmissor?: string;
 
-  @Column({ name: 'autorizacao_uso_imagem', default: false })
-  autorizacaoUsoImagem: boolean;
+  @Column({ name: 'endereco_logradouro' })
+  enderecoLogradouro: string;
 
+  @Column({ name: 'endereco_numero' })
+  enderecoNumero: string;
 
+  @Column({ name: 'endereco_cep' })
+  enderecoCep: string;
 
-// Preenche automático as tabelas com a criação e atualização do ultimo registro para maior controle.
+  @Column({ name: 'endereco_complemento', nullable: true })
+  enderecoComplemento?: string;
 
-  @CreateDateColumn()
-  UsuariocriadoEm: Date;
+  @Column({ name: 'endereco_bairro' })
+  enderecoBairro: string;
 
-  @UpdateDateColumn()
-  UsuarioatualizadoEm: Date;
+  @Column({ name: 'endereco_estado', length: 2 })
+  enderecoEstado: string;
 
-  @Column({
-    type: 'enum',
-    enum: Role,
-  })
-  role: Role;
+  @Column({ name: 'endereco_cidade' })
+  enderecoCidade: string;
+
+  @Column()
+  nacionalidade: string;
+
+  @Column()
+  naturalidade: string;
+
+  @Column({ name: 'possui_necessidades_especiais', default: false })
+  possuiNecessidadesEspeciais: boolean;
+
+  @Column({ name: 'descricao_necessidades_especiais', nullable: true })
+  descricaoNecessidadesEspeciais?: string;
+
+  @Column({ name: 'possui_alergias', default: false })
+  possuiAlergias: boolean;
+
+  @Column({ name: 'descricao_alergias', nullable: true })
+  descricaoAlergias?: string;
+
+  @Column({ name: 'autorizacao_uso_imagem', default: false })
+  autorizacaoUsoImagem: boolean;
+
+  @CreateDateColumn()
+  UsuariocriadoEm: Date;
+
+  @UpdateDateColumn()
+  UsuarioatualizadoEm: Date;
+
+  @Column({ type: 'enum', enum: Role })
+  role: Role;
 }

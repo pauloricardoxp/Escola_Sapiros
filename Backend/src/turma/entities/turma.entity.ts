@@ -32,13 +32,16 @@ export class Turma {
   ativa: boolean;
 
   // Relacionamentos
-  @ManyToMany(() => Aluno, aluno => aluno.turmas)
-  @JoinTable({
-    name: 'turma_alunos',
-    joinColumn: { name: 'turma_id', referencedColumnName: 'id_turma' },
-    inverseJoinColumn: { name: 'aluno_id', referencedColumnName: 'matricula_aluno' }
-  })
-  alunos: Aluno[];
+// Turma.ts
+@ManyToMany(() => Aluno, aluno => aluno.turmas)
+@JoinTable({
+  name: 'turma_alunos',
+  joinColumn: { name: 'turma_id', referencedColumnName: 'id_turma' },
+  inverseJoinColumn: { name: 'aluno_id', referencedColumnName: 'id' },
+})
+alunos: Aluno[];
+
+
 
   @ManyToMany(() => Disciplina, disciplina => disciplina.turmas)
   @JoinTable({

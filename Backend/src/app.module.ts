@@ -30,6 +30,7 @@ import { AvisosModule } from './avisos/avisos.module';
         database: process.env.MYSQL_DB_NAME,
         autoLoadEntities: true,
         synchronize: true,
+        dropSchema: false,
       }),
     }),
 

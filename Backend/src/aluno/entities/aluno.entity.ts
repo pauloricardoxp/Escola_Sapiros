@@ -1,104 +1,86 @@
-import { Entity, PrimaryColumn, Column, OneToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Column, ManyToMany, CreateDateColumn, UpdateDateColumn, Entity, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
 import { Usuario } from '../../usuario/entities/usuario.entity';
 import { Turma } from '../../turma/entities/turma.entity';
 
 @Entity('alunos')
 export class Aluno {
-  @PrimaryColumn({ name: 'matricula_aluno' })
-  matricula_aluno: string;
+  @PrimaryColumn('uuid')
+  id: string; // O ID é a chave primária da tabela 'alunos'
 
-  // Informações Acadêmicas
-  @Column({ name: 'serie_ano' })
-  serieAno: string;
+  @OneToOne(() => Usuario, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'id' }) // O ID também é a chave estrangeira para 'usuarios'
+  usuario: Usuario;
 
-  @Column({ name: 'escola_origem', nullable: true })
-  escolaOrigem: string;
+  @Column({ name: 'matricula_aluno', unique: true })
+  matricula_aluno: string;
 
-  // Dados do Responsável
-  @Column({ name: 'responsavel_nome', nullable: true })
-  responsavelNome?: string;
+  @Column()
+  serieAno: string;
 
-  @Column({ name: 'responsavel_data_nascimento', type: 'date', nullable: true })
-  responsavel_Data_Nascimento?: Date;
+  @Column({ nullable: true })
+  escolaOrigem?: string;
 
+  @Column({ nullable: true })
+  responsavelNome?: string;
 
-  @Column({ type: 'enum', enum: ['MASCULINO', 'FEMININO', 'OUTRO', 'NAO_INFORMADO'], default: 'NAO_INFORMADO' })
-  responsavel_sexo: string;
+  @Column({ type: 'date', nullable: true })
+  responsavel_Data_Nascimento?: Date;
 
-  @Column({ nullable: true })
-  responsavel_nacionalidade: string;
+  @Column({
+    type: 'enum',
+    enum: ['MASCULINO', 'FEMININO', 'OUTRO', 'NAO_INFORMADO'],
+    default: 'NAO_INFORMADO',
+  })
+  responsavel_sexo?: string;
 
-  @Column({ nullable: true })
-  responsavel_naturalidade: string;
+  @Column({ nullable: true })
+  responsavel_nacionalidade?: string;
 
-   // Documentos do Responsável
+  @Column({ nullable: true })
+  responsavel_naturalidade?: string;
 
-  @Column({ name: 'responsavel_cpf', nullable: true })
-  responsavelCpf?: string;
+  @Column({ nullable: true })
+  responsavelCpf?: string;
 
-  @Column({ name: 'responsavel_rg', nullable: true })
-  responsavelRg?: string;
+  @Column({ nullable: true })
+  responsavelRg?: string;
 
-  @Column({nullable: true })
-  responsavel_rg_OrgaoEmissor: string;
+  @Column({ nullable: true })
+  responsavel_rg_OrgaoEmissor?: string;
 
+  @Column({ nullable: true })
+  responsavelTelefone?: string;
 
-  @Column({ name: 'responsavel_telefone', nullable: true })
-  responsavelTelefone?: string;
+  @Column({ nullable: true })
+  responsavelEmail?: string;
 
-  @Column({ name: 'responsavel_email', nullable: true })
-  responsavelEmail?: string;
+  @Column({ nullable: true })
+  responsavelCep?: string;
 
+  @Column({ nullable: true })
+  responsavelLogradouro?: string;
 
-  // Endereço do Responsável
+  @Column({ nullable: true })
+  responsavelNumero?: string;
 
-  @Column({ name: 'responsavel_cep', nullable: true })
-  responsavelCep?: string;
+  @Column({ nullable: true })
+  responsavelComplemento?: string;
 
-  @Column({ name: 'responsavel_logradouro', nullable: true })
-  responsavelLogradouro?: string;
+  @Column({ nullable: true })
+  responsavelBairro?: string;
 
-  @Column({ name: 'responsavel_numero', nullable: true })
-  responsavelNumero?: string;
+  @Column({ nullable: true })
+  responsavelCidade?: string;
 
-  @Column({ name: 'responsavel_complemento', nullable: true })
-  responsavelComplemento?: string;
+  @Column({ length: 2, nullable: true })
+  responsavelEstado?: string;
 
-  @Column({ name: 'responsavel_bairro', nullable: true })
-  responsavelBairro?: string;
+  @ManyToMany(() => Turma, turma => turma.alunos)
+  turmas?: Turma[];
 
-  @Column({ name: 'responsavel_cidade', nullable: true })
-  responsavelCidade?: string;
+  @CreateDateColumn()
+  AlunocriadoEm: Date;
 
-  @Column({ name: 'responsavel_estado', length: 2, nullable: true })
-  responsavelEstado?: string;
-
-  
-
-  // Relacionamentos
-  @OneToOne(() => Usuario, { nullable: true })
-  @JoinColumn({ name: 'usuario_id' })
-  usuario: Usuario;
-
-  @ManyToMany(() => Turma, turma => turma.alunos)
-@JoinTable({
-  name: 'turma_alunos',
-  joinColumn: {
-    name: 'aluno_id',
-    referencedColumnName: 'matricula_aluno'
-  },
-  inverseJoinColumn: {
-    name: 'turma_id',
-    referencedColumnName: 'id_turma' 
-  }
-})
-turmas: Turma[];
-
-
-   // Preenche automático as tabelas com a criação e atualização do ultimo registro para maior controle.
-  @CreateDateColumn()
-  AlunocriadoEm: Date;
-
-  @UpdateDateColumn()
-  AlunoatualizadoEm: Date;
+  @UpdateDateColumn()
+  AlunoatualizadoEm: Date;
 }

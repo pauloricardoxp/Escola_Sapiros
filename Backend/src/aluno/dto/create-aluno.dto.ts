@@ -1,10 +1,7 @@
-import {  IsString, IsOptional,  IsArray, IsUUID, Length, IsDateString, IsEmail, IsEnum } from 'class-validator';
+import { IsString, IsOptional, Length, IsDateString, IsEmail, IsEnum, IsArray } from 'class-validator';
+import { CreateUsuarioDto, Sexo } from '../../usuario/dto/create-usuario.dto';
 
-export class CreateAlunoDto {
-  @IsString()
-  @Length(10, 10, { message: 'A matrícula deve ter 10 dígitos.' })
-  matriculaAluno: string;
-
+export class CreateAlunoDto extends CreateUsuarioDto {
   @IsString()
   serieAno: string;
 
@@ -12,7 +9,6 @@ export class CreateAlunoDto {
   @IsString()
   escolaOrigem?: string;
 
-  // Dados do Responsável
   @IsOptional()
   @IsString()
   responsavelNome?: string;
@@ -22,16 +18,17 @@ export class CreateAlunoDto {
   responsavel_Data_Nascimento?: Date;
 
   @IsOptional()
-  @IsEnum(['MASCULINO', 'FEMININO', 'OUTRO', 'NAO_INFORMADO'])
-  responsavel_sexo?: string;
+  @IsEnum(Sexo)
+  responsavel_sexo?: Sexo;
 
+  @IsOptional()
   @IsString()
-  responsavel_nacionalidade: string;
+  responsavel_nacionalidade?: string;
 
+  @IsOptional()
   @IsString()
-  responsavel_naturalidade: string;
+  responsavel_naturalidade?: string;
 
-  // Documentos
   @IsOptional()
   @IsString()
   responsavelCpf?: string;
@@ -44,7 +41,6 @@ export class CreateAlunoDto {
   @IsString()
   responsavel_rg_OrgaoEmissor?: string;
 
-  // Contato
   @IsOptional()
   @IsString()
   responsavelTelefone?: string;
@@ -53,7 +49,6 @@ export class CreateAlunoDto {
   @IsEmail()
   responsavelEmail?: string;
 
-  // Endereço
   @IsOptional()
   @IsString()
   responsavelCep?: string;
@@ -80,13 +75,8 @@ export class CreateAlunoDto {
 
   @IsOptional()
   @IsString()
-  @Length(2, 2, { message: 'O estado deve ter 2 caracteres.' })
+  @Length(2, 2)
   responsavelEstado?: string;
-
-  // Relacionamentos
-  @IsOptional()
-  @IsUUID()
-  usuarioId?: string;
 
   @IsOptional()
   @IsArray()
