@@ -1,44 +1,81 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  ValidationPipe,
+  UsePipes,
+  Req,
+} from '@nestjs/common';
+import type { Request } from 'express';
 import { AlunoService } from './aluno.service';
 import { CreateAlunoDto } from './dto/create-aluno.dto';
 import { UpdateAlunoDto } from './dto/update-aluno.dto';
-import { MatriculaParamDto } from './dto/matricula-param.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
+import { Role, Usuario } from '../usuario/entities/usuario.entity';
+import { SenhaExpiradaGuard } from 'src/auth/senha-expirada/senha-expirada.guard';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
+type AuthRequest = Request & {
+  user?: Usuario | { id: string; role: Role } | any;
+};
+
+@UseGuards(JwtAuthGuard, RolesGuard, SenhaExpiradaGuard)
 @Controller('alunos')
 export class AlunoController {
   constructor(private readonly alunoService: AlunoService) {}
 
-  @Roles('coordenacao')
+  // Criar aluno: coordenação apenas
+  @Roles(Role.COORDENACAO)
   @Post()
-  create(@Body() createAlunoDto: CreateAlunoDto) {
-    return this.alunoService.create(createAlunoDto);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async create(
+    @Body() createAlunoDto: CreateAlunoDto,
+  ) {
+    return await this.alunoService.create(createAlunoDto);
   }
 
-  @Roles('coordenacao', 'professores')
+  // Listar alunos: coordenação e professores
+  @Roles(Role.COORDENACAO, Role.PROFESSOR)
   @Get()
-  findAll() {
-    return this.alunoService.findAll();
+  async findAll() {
+    return await this.alunoService.findAll();
   }
 
-  @Roles('coordenacao', 'professores')
-  @Get(':matricula')
-  findOne(@Param(new ValidationPipe({ transform: true })) params: MatriculaParamDto) {
-    return this.alunoService.findOne(params.matricula);
+  // Buscar aluno pela PK (id herdado de Usuario)
+  @Roles(Role.COORDENACAO, Role.PROFESSOR)
+  @Get(':id')
+  async findOne(
+    @Param('id') id: string,
+    @Req() req: AuthRequest,
+  ) {
+    return await this.alunoService.findOne(id);
   }
 
-  @Roles('coordenacao')
-  @Patch(':matricula')
-  update(@Param(new ValidationPipe({ transform: true })) params: MatriculaParamDto, @Body() updateAlunoDto: UpdateAlunoDto) {
-    return this.alunoService.update(params.matricula, updateAlunoDto);
+  // Atualizar aluno
+  @Roles(Role.COORDENACAO)
+  @Patch(':id')
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id') id: string,
+    @Body() updateAlunoDto: UpdateAlunoDto,
+    @Req() req: AuthRequest,
+  ) {
+    return await this.alunoService.update(id, updateAlunoDto);
   }
 
-  @Roles('coordenacao')
-  @Delete(':matricula')
-  remove(@Param(new ValidationPipe({ transform: true })) params: MatriculaParamDto) {
-    return this.alunoService.remove(params.matricula);
+  // Remover aluno
+  @Roles(Role.COORDENACAO)
+  @Delete(':id')
+  async remove(
+    @Param('id') id: string,
+    @Req() req: AuthRequest,
+  ) {
+    return await this.alunoService.remove(id);
   }
 }

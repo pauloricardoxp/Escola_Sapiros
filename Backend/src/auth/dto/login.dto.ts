@@ -1,11 +1,31 @@
-import { IsString, MinLength, MaxLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  MaxLength,
+  ValidateIf,
+  IsEnum,
+} from 'class-validator';
+import { Role } from '../../usuario/entities/usuario.entity';
 
 export class LoginDto {
-  @IsString()
-  identificador: string; // pode ser CPF ou email
+  @IsNotEmpty()
+  @IsEnum(Role)
+  role: Role;
 
+  @ValidateIf((dto) => dto.role === Role.ALUNO)
+  @IsNotEmpty()
   @IsString()
-  @MinLength(6, { message: 'A senha deve ter no mínimo 6 caracteres' })
-  @MaxLength(20, { message: 'A senha deve ter no máximo 64 caracteres' })
+  matricula?: string;
+
+  @ValidateIf((dto) => dto.role !== Role.ALUNO)
+  @IsNotEmpty()
+  @IsString()
+  identificador?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(8)
+  @MaxLength(64)
   senha: string;
 }

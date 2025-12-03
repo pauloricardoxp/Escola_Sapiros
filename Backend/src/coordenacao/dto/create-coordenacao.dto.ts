@@ -1,21 +1,14 @@
-import { IsEmail, IsNotEmpty, IsOptional, Length, IsEnum, IsString, IsNumberString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsUUID } from 'class-validator';
 import { FuncaoCoordenacao } from '../enums/funcao-coordenacao.enum';
 
 export class CreateCoordenacaoDto {
-  @IsOptional()
-  @IsEmail()
-  email?: string;
+  @IsNotEmpty({ message: 'usuarioId é obrigatório' })
+  @IsUUID('4', { message: 'usuarioId deve ser um UUID válido' })
+  usuarioId: string;
 
-  @IsOptional()
-  @IsNumberString()
-  @Length(10, 11, { message: 'Telefone deve ter 10 ou 11 dígitos numéricos' })
-  telefone?: string;
-
-  @IsNotEmpty()
-  @IsNumberString()
-  usuarioId: number;
-
-  @IsNotEmpty()
-  @IsEnum(FuncaoCoordenacao, { message: 'Função deve ser coordenador, diretor, secretario ou administrador' })
+  @IsNotEmpty({ message: 'funcao é obrigatória' })
+  @IsEnum(FuncaoCoordenacao, {
+    message: 'Função deve ser coordenador, diretor, secretario ou administrador',
+  })
   funcao: FuncaoCoordenacao;
 }

@@ -1,48 +1,68 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get,Param, ParseUUIDPipe, Patch, Post, Req,UseGuards,UsePipes, ValidationPipe,} from '@nestjs/common';
+import type { Request } from 'express';
 import { CoordenacaoService } from './coordenacao.service';
 import { CreateCoordenacaoDto } from './dto/create-coordenacao.dto';
 import { UpdateCoordenacaoDto } from './dto/update-coordenacao.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
+import { Role, Usuario } from '../usuario/entities/usuario.entity';
+import { Coordenacao } from './entities/coordenacao.entity';
+
+type AuthRequest = Request & { user?: Usuario | any };
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('coordenacao')
 export class CoordenacaoController {
   constructor(private readonly coordenacaoService: CoordenacaoService) {}
 
-  // Criar: coordenacao
-  @Roles('coordenacao')
+  // Criar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Post()
-  create(@Body() createCoordenacaoDto: CreateCoordenacaoDto) {
-    return this.coordenacaoService.create(createCoordenacaoDto);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async create(
+    @Body() createCoordenacaoDto: CreateCoordenacaoDto,
+    @Req() req: AuthRequest,
+  ): Promise<Coordenacao> {
+    return await this.coordenacaoService.create(createCoordenacaoDto, req.user);
   }
 
-  // Listar: coordenacao
-  @Roles('coordenacao')
+  // Listar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Get()
-  findAll() {
-    return this.coordenacaoService.findAll();
+  async findAll(@Req() req: AuthRequest): Promise<Coordenacao[]> {
+    return await this.coordenacaoService.findAll(req.user);
   }
 
-  // Ver: coordenacao
-  @Roles('coordenacao')
+  // Ver: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coordenacaoService.findOne(+id);
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: AuthRequest,
+  ): Promise<Coordenacao> {
+    return await this.coordenacaoService.findOne(id, req.user);
   }
 
-  // Atualizar: coordenacao
-  @Roles('coordenacao')
+  // Atualizar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCoordenacaoDto: UpdateCoordenacaoDto) {
-    return this.coordenacaoService.update(+id, updateCoordenacaoDto);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateCoordenacaoDto: UpdateCoordenacaoDto,
+    @Req() req: AuthRequest,
+  ): Promise<Coordenacao> {
+    return await this.coordenacaoService.update(id, updateCoordenacaoDto, req.user);
   }
 
-  // Deletar: coordenacao
-  @Roles('coordenacao')
+  // Deletar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.coordenacaoService.remove(+id);
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: AuthRequest,
+  ): Promise<void> {
+    return await this.coordenacaoService.remove(id, req.user);
   }
 }

@@ -8,6 +8,11 @@ import { AppService } from './app.service';
 import { ProfessorModule } from './professor/professor.module';
 import { AlunoModule } from './aluno/aluno.module';
 import { CoordenacaoModule } from './coordenacao/coordenacao.module';
+import { DisciplinaModule } from './disciplina/disciplina.module';
+import { NotaModule } from './nota/nota.module';
+import { FrequenciaModule } from './frequencia/frequencia.module';
+import { AvisosModule } from './avisos/avisos.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -26,6 +31,7 @@ import { CoordenacaoModule } from './coordenacao/coordenacao.module';
         database: process.env.MYSQL_DB_NAME,
         autoLoadEntities: true,
         synchronize: true,
+        dropSchema: false,
       }),
     }),
 
@@ -34,6 +40,11 @@ import { CoordenacaoModule } from './coordenacao/coordenacao.module';
     ProfessorModule,
     AlunoModule,
     CoordenacaoModule,
+    DisciplinaModule,
+    NotaModule,
+    FrequenciaModule,
+    AvisosModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

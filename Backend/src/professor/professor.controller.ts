@@ -1,48 +1,55 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {Controller,Get, Post, Body,Patch, Param, Delete,UseGuards, UsePipes,ValidationPipe, ParseUUIDPipe,} from '@nestjs/common';
 import { ProfessorService } from './professor.service';
 import { CreateProfessorDto } from './dto/create-professor.dto';
 import { UpdateProfessorDto } from './dto/update-professor.dto';
 import { JwtAuthGuard } from '../auth/strategy/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles/roles.guard';
 import { Roles } from '../auth/roles/roles.decorator';
+import { Role } from '../usuario/entities/usuario.entity';
+import { Professor } from './entities/professor.entity';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('professores')
 export class ProfessorController {
   constructor(private readonly professorService: ProfessorService) {}
 
-  // Criar: coordenacao
-  @Roles('coordenacao')
+  // Criar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Post()
-  create(@Body() createProfessorDto: CreateProfessorDto) {
-    return this.professorService.create(createProfessorDto);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async create(@Body() createProfessorDto: CreateProfessorDto): Promise<Professor> {
+    return await this.professorService.create(createProfessorDto);
   }
 
-  // Listar: coordenacao, professores
-  @Roles('coordenacao', 'professores')
+  // Listar: coordenação e professores
+  @Roles(Role.COORDENACAO, Role.PROFESSOR)
   @Get()
-  findAll() {
-    return this.professorService.findAll();
+  async findAll(): Promise<Professor[]> {
+    return await this.professorService.findAll();
   }
 
-  // Ver: coordenacao, professores
-  @Roles('coordenacao', 'professores')
+  // Ver: coordenação e professores
+  @Roles(Role.COORDENACAO, Role.PROFESSOR)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.professorService.findOne(+id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<Professor> {
+    return await this.professorService.findOne(id);
   }
 
-  // Atualizar: coordenacao
-  @Roles('coordenacao')
+  // Atualizar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfessorDto: UpdateProfessorDto) {
-    return this.professorService.update(+id, updateProfessorDto);
+  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateProfessorDto: UpdateProfessorDto,
+  ): Promise<Professor> {
+    return await this.professorService.update(id, updateProfessorDto);
   }
 
-  // Deletar: coordenacao
-  @Roles('coordenacao')
+  // Deletar: apenas coordenação
+  @Roles(Role.COORDENACAO)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.professorService.remove(+id);
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    return await this.professorService.remove(id);
   }
 }
