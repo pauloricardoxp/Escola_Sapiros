@@ -12,6 +12,7 @@ import { DisciplinaModule } from './disciplina/disciplina.module';
 import { NotaModule } from './nota/nota.module';
 import { FrequenciaModule } from './frequencia/frequencia.module';
 import { AvisosModule } from './avisos/avisos.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AvisosModule } from './avisos/avisos.module';
     NotaModule,
     FrequenciaModule,
     AvisosModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
