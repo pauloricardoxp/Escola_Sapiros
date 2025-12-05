@@ -23,36 +23,42 @@ export class AuthService {
   ) {}
 
   async login(dto: any) {
+    const identificador: string = dto.identificador;
+
+    if (!identificador) {
+      throw new UnauthorizedException('Identificador é obrigatório');
+    }
+
     let usuario: Usuario | null = null;
 
-    // Identificação do usuário
-    if (dto.role === Role.ALUNO) {
-      if (!dto.matricula) throw new UnauthorizedException('Matrícula é obrigatória para alunos');
+    // 1 — Tentar identificar como ALUNO (busca pela matrícula)
+    const aluno = await this.alunoRepository.findOne({
+      where: { matricula_aluno: identificador },
+      relations: ['usuario'],
+    });
 
-      const aluno = await this.alunoRepository.findOne({
-        where: { matricula_aluno: dto.matricula },
-        relations: ['usuario'],
-      });
-
-      if (!aluno) throw new UnauthorizedException('Matrícula não encontrada');
-
+    if (aluno) {
       usuario = aluno.usuario;
     } else {
-      if (!dto.identificador) throw new UnauthorizedException('Identificador é obrigatório');
+      // 2 — Se não for aluno, tenta achar usuário por CPF ou e-mail
+      usuario = await this.usuarioService.findByCpfOrEmail(identificador);
+    }
 
-      usuario = await this.usuarioService.findByCpfOrEmail(dto.identificador);
-      if (!usuario) throw new UnauthorizedException('Usuário não encontrado');
+    if (!usuario) {
+      throw new UnauthorizedException('Usuário não encontrado');
     }
 
     // Validação da senha
     const senhaValida = await bcrypt.compare(dto.senha, usuario.senha);
-    if (!senhaValida) throw new UnauthorizedException('Credenciais inválidas');
+    if (!senhaValida) {
+      throw new UnauthorizedException('Credenciais inválidas');
+    }
 
-    // Verifica se é senha temporária
+    // Verifica senha padrão
     const senhaPadrao = 'Sapiros@123';
     const isSenhaPadrao = await bcrypt.compare(senhaPadrao, usuario.senha);
+
     if (isSenhaPadrao) {
-      // Dispara email de redefinição automaticamente
       try {
         await this.requestPasswordReset(usuario.email);
       } catch (err) {
@@ -60,15 +66,16 @@ export class AuthService {
       }
 
       throw new UnauthorizedException(
-        'Senha temporária detectada. Enviamos um email para redefinição de senha.',
+        'Senha temporária detectada. Enviamos um email para redefinição.'
       );
     }
 
-    // Valida expiração da senha
-    if (usuario.senhaExpiraEm && new Date() > new Date(usuario.senhaExpiraEm))
-      throw new UnauthorizedException('A senha expirou. Por favor, redefina sua senha.');
+    // Valida expiração
+    if (usuario.senhaExpiraEm && new Date() > new Date(usuario.senhaExpiraEm)) {
+      throw new UnauthorizedException('A senha expirou. Redefina sua senha.');
+    }
 
-    // Criação do token JWT
+    // TOKEN JWT
     const payload = {
       sub: usuario.id,
       role: usuario.role,
@@ -84,6 +91,7 @@ export class AuthService {
       token: this.jwtService.sign(payload),
     };
   }
+
 
   async requestPasswordReset(email: string) {
     const usuario = await this.usuarioService.findByCpfOrEmail(email);
